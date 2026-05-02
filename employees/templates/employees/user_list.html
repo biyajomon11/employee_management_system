@@ -1,0 +1,47 @@
+{% extends 'employees/base.html' %}
+
+{% block title %}Employee List{% endblock %}
+{% block page_title %}Employee Management{% endblock %}
+
+{% block content %}
+<div class="table-container">
+    <div style="padding: 1.5rem; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center;">
+        <h3 style="font-size: 1.125rem; font-weight: 600;">All Employees</h3>
+        <a href="{% url 'user_create' %}" class="btn btn-primary">Add Employee</a>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Role</th>
+                <th>Department</th>
+                <th>Joined Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td>
+                    <div style="font-weight: 500;">{{ user.get_full_name|default:user.username }}</div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted);">{{ user.email }}</div>
+                </td>
+                <td><span class="badge {% if user.profile.role == 'ADMIN' %}badge-danger{% elif user.profile.role == 'MANAGER' %}badge-warning{% else %}badge-success{% endif %}">{{ user.profile.role }}</span></td>
+                <td>{{ user.profile.department.name|default:"-" }}</td>
+                <td>{{ user.profile.date_of_joining }}</td>
+                <td>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <a href="{% url 'user_edit' user.pk %}" class="btn btn-outline" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">Edit</a>
+                        <a href="{% url 'user_delete' user.pk %}" class="btn btn-outline" style="padding: 0.25rem 0.5rem; font-size: 0.75rem; color: var(--danger); border-color: #fee2e2;" onclick="return confirm('Are you sure you want to delete this user?')">Delete</a>
+                    </div>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" style="text-align: center; padding: 2rem; color: var(--text-muted);">No employees found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

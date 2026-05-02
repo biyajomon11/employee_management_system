@@ -1,0 +1,31 @@
+{% extends 'employees/base.html' %}
+
+{% block title %}Company Reports{% endblock %}
+{% block page_title %}Reports & Analytics{% endblock %}
+
+{% block content %}
+<div class="stats-grid">
+    <a href="{% url 'attendance_report' %}" class="card" style="text-decoration: none; transition: transform 0.2s;">
+        <div style="font-size: 2rem; margin-bottom: 1rem;">📋</div>
+        <div class="card-title">Attendance Reports</div>
+        <div style="font-size: 0.875rem; color: var(--text-muted);">Daily logs, status distribution, and trends.</div>
+    </a>
+    <a href="{% url 'payroll_report' %}" class="card" style="text-decoration: none; transition: transform 0.2s;">
+        <div style="font-size: 2rem; margin-bottom: 1rem;">💰</div>
+        <div class="card-title">Payroll Reports</div>
+        <div style="font-size: 0.875rem; color: var(--text-muted);">Salary distribution, monthly trends, and totals.</div>
+    </a>
+    <a href="{% url 'performance_report' %}" class="card" style="text-decoration: none; transition: transform 0.2s;">
+        <div style="font-size: 2rem; margin-bottom: 1rem;">⭐</div>
+        <div class="card-title">Performance Reports</div>
+        <div style="font-size: 0.875rem; color: var(--text-muted);">Employee ratings, reviews, and top performers.</div>
+    </a>
+</div>
+
+<style>
+    .card:hover {
+        transform: translateY(-5px);
+        border-color: var(--primary);
+    }
+</style>
+{% endblock %}

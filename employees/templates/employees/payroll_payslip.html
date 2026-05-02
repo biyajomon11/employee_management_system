@@ -1,0 +1,80 @@
+{% extends 'employees/base.html' %}
+
+{% block title %}Payslip - {{ payroll.month }}{% endblock %}
+{% block page_title %}Employee Payslip{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 800px; margin: 0 auto; padding: 3rem; background: white; border: 1px solid #e2e8f0; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);">
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid var(--primary); padding-bottom: 2rem; margin-bottom: 2rem;">
+        <div>
+            <h1 style="color: var(--primary); font-size: 2rem; font-weight: 800; margin-bottom: 0.5rem;">EMS PRO</h1>
+            <p style="color: var(--text-muted); font-size: 0.875rem;">Corporate Headquarters<br>123 Business Avenue, Tech City</p>
+        </div>
+        <div style="text-align: right;">
+            <h2 style="font-size: 1.25rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.25rem;">PAYSLIP</h2>
+            <p style="color: var(--text-muted); font-size: 0.875rem;">{{ payroll.month }} {{ payroll.payment_date|date:"Y" }}</p>
+        </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; margin-bottom: 3rem;">
+        <div>
+            <h3 style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1rem;">Employee Details</h3>
+            <p style="font-size: 1.125rem; font-weight: 600; color: var(--text-main); margin-bottom: 0.25rem;">{{ payroll.user.get_full_name|default:payroll.user.username }}</p>
+            <p style="color: var(--text-muted); font-size: 0.875rem;">{{ payroll.user.profile.job_title }}</p>
+            <p style="color: var(--text-muted); font-size: 0.875rem;">Department: {{ payroll.user.profile.department.name|default:"General" }}</p>
+        </div>
+        <div style="text-align: right;">
+            <h3 style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1rem;">Payment Information</h3>
+            <p style="color: var(--text-muted); font-size: 0.875rem;">Payment Date: {{ payroll.payment_date|date:"d M, Y" }}</p>
+            <p style="color: var(--text-muted); font-size: 0.875rem;">Employee ID: #{{ payroll.user.id }}</p>
+        </div>
+    </div>
+
+    <table style="width: 100%; border-collapse: collapse; margin-bottom: 3rem;">
+        <thead>
+            <tr style="border-bottom: 1px solid #e2e8f0;">
+                <th style="padding: 1rem 0; text-align: left; color: var(--text-muted); font-weight: 600;">Description</th>
+                <th style="padding: 1rem 0; text-align: right; color: var(--text-muted); font-weight: 600;">Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td style="padding: 1rem 0; color: var(--text-main);">Base Salary</td>
+                <td style="padding: 1rem 0; text-align: right; color: var(--text-main); font-weight: 600;">${{ payroll.base_salary|floatformat:2 }}</td>
+            </tr>
+            <tr>
+                <td style="padding: 1rem 0; color: var(--success);">Performance Bonus</td>
+                <td style="padding: 1rem 0; text-align: right; color: var(--success); font-weight: 600;">+ ${{ payroll.bonuses|floatformat:2 }}</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #e2e8f0;">
+                <td style="padding: 1rem 0; color: var(--danger);">Deductions (Tax/Insurance)</td>
+                <td style="padding: 1rem 0; text-align: right; color: var(--danger); font-weight: 600;">- ${{ payroll.deductions|floatformat:2 }}</td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td style="padding: 2rem 0; font-size: 1.25rem; font-weight: 800; color: var(--text-main);">Net Payable Amount</td>
+                <td style="padding: 2rem 0; text-align: right; font-size: 1.5rem; font-weight: 800; color: var(--primary);">${{ payroll.net_pay|floatformat:2 }}</td>
+            </tr>
+        </tfoot>
+    </table>
+
+    <div style="border-top: 1px dashed #e2e8f0; padding-top: 2rem; display: flex; justify-content: space-between; align-items: center;">
+        <div>
+            <p style="font-size: 0.75rem; color: var(--text-muted);">* This is a computer-generated document and does not require a signature.</p>
+        </div>
+        <button onclick="window.print()" class="btn btn-primary" style="padding: 0.75rem 1.5rem;">
+            <i>🖨️</i> Print Payslip
+        </button>
+    </div>
+</div>
+
+<style>
+    @media print {
+        .sidebar, .top-nav, .btn-primary { display: none !important; }
+        .main-content { margin-left: 0 !important; width: 100% !important; }
+        .card { box-shadow: none !important; border: none !important; padding: 0 !important; }
+        body { background: white !important; }
+    }
+</style>
+{% endblock %}

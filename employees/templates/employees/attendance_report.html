@@ -1,0 +1,84 @@
+{% extends 'employees/base.html' %}
+{% block title %}Daily Attendance Report{% endblock %}
+{% block page_title %}Attendance Report - {{ today }}{% endblock %}
+
+{% block content %}
+<div style="display: grid; grid-template-columns: 1fr 2fr; gap: 2rem;">
+    <div class="card">
+        <h3 style="margin-bottom: 1.5rem; font-size: 1.125rem;">Daily Summary</h3>
+        <div style="max-width: 250px; margin: 0 auto;">
+            <canvas id="attendanceChart"></canvas>
+        </div>
+        <div style="margin-top: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem;">
+            {% for item in attendance_stats %}
+            <div style="display: flex; justify-content: space-between; font-size: 0.875rem;">
+                <span style="display: flex; align-items: center; gap: 0.5rem;">
+                    <span style="width: 12px; height: 12px; border-radius: 50%; background: {% if item.status == 'PRESENT' %}#10b981{% elif item.status == 'ABSENT' %}#ef4444{% else %}#f59e0b{% endif %};"></span>
+                    {{ item.status|title }}
+                </span>
+                <span style="font-weight: 600;">{{ item.count }}</span>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="table-container">
+        <div style="padding: 1.25rem; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center;">
+            <h3 style="font-size: 1.125rem; font-weight: 600;">Employee Status List</h3>
+            <span style="font-size: 0.875rem; color: var(--text-muted);">Total Employees: {{ report_list|length }}</span>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Employee</th>
+                    <th>Department</th>
+                    <th>Status</th>
+                    <th>Check In</th>
+                    <th>Check Out</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in report_list %}
+                <tr>
+                    <td>
+                        <div style="font-weight: 500;">{{ item.employee.get_full_name|default:item.employee.username }}</div>
+                        <div style="font-size: 0.75rem; color: var(--text-muted);">@{{ item.employee.username }}</div>
+                    </td>
+                    <td>{{ item.employee.profile.department.name|default:"-" }}</td>
+                    <td>
+                        <span class="badge {% if item.status == 'PRESENT' %}badge-success{% elif item.status == 'ABSENT' %}badge-danger{% else %}badge-warning{% endif %}">
+                            {{ item.status }}
+                        </span>
+                    </td>
+                    <td>{{ item.check_in|time:"H:i"|default:"-" }}</td>
+                    <td>{{ item.check_out|time:"H:i"|default:"-" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('attendanceChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: [{% for item in attendance_stats %}'{{ item.status|title }}',{% endfor %}],
+            datasets: [{
+                data: [{% for item in attendance_stats %}{{ item.count }},{% endfor %}],
+                backgroundColor: ['#10b981', '#ef4444', '#f59e0b', '#64748b']
+            }]
+        },
+        options: {
+            cutout: '70%',
+            plugins: {
+                legend: { display: false }
+            }
+        }
+    });
+</script>
+{% endblock %}

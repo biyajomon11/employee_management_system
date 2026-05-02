@@ -1,0 +1,65 @@
+{% extends "employees/base.html" %}
+
+{% block title %}Employee List - EMS{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Employee Directory</h2>
+    {% if user.username == 'admin' or user.username == 'manager' %}
+    <a href="{% url 'employee_create' %}" class="btn btn-primary">
+        Add Employee
+    </a>
+    {% endif %}
+</div>
+
+<div class="card shadow-sm border-0">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Department</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Salary</th>
+                        <th>Joined</th>
+                        {% if user.username == 'admin' or user.username == 'manager' %}
+                        <th class="text-end">Actions</th>
+                        {% endif %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for employee in employees %}
+                    <tr>
+                        <td>#{{ employee.id }}</td>
+                        <td class="fw-bold">{{ employee.name }}</td>
+                        <td><span class="badge bg-secondary">{{ employee.department }}</span></td>
+                        <td>{{ employee.email }}</td>
+                        <td>{{ employee.phone }}</td>
+                        <td>${{ employee.salary|floatformat:2 }}</td>
+                        <td>{{ employee.date_of_joining|date:"M d, Y" }}</td>
+                        
+                        {% if user.username == 'admin' or user.username == 'manager' %}
+                        <td class="text-end">
+                            <a href="{% url 'employee_update' employee.id %}" class="btn btn-sm btn-outline-primary">Edit</a>
+                            {% if user.username == 'admin' %}
+                            <a href="{% url 'employee_delete' employee.id %}" class="btn btn-sm btn-outline-danger ms-1">Delete</a>
+                            {% endif %}
+                        </td>
+                        {% endif %}
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8" class="text-center py-4 text-muted">
+                            No employees found in the system.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

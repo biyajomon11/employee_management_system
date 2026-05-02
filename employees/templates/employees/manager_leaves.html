@@ -1,0 +1,53 @@
+{% extends 'employees/base.html' %}
+
+{% block title %}Team Leaves{% endblock %}
+{% block page_title %}Leave Management{% endblock %}
+
+{% block content %}
+<div class="table-container">
+    <div style="padding: 1.5rem; border-bottom: 1px solid #e2e8f0;">
+        <h3 style="font-size: 1.125rem; font-weight: 600;">Team Leave Requests</h3>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Employee</th>
+                <th>Leave Type</th>
+                <th>Period</th>
+                <th>Reason</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for leave in leaves %}
+            <tr>
+                <td><div style="font-weight: 600;">{{ leave.user.get_full_name|default:leave.user.username }}</div></td>
+                <td>{{ leave.get_leave_type_display }}</td>
+                <td>{{ leave.start_date }} to {{ leave.end_date }}</td>
+                <td>{{ leave.reason|truncatechars:30 }}</td>
+                <td>
+                    <span class="badge {% if leave.status == 'APPROVED' %}badge-success{% elif leave.status == 'PENDING' %}badge-warning{% else %}badge-danger{% endif %}">
+                        {{ leave.status }}
+                    </span>
+                </td>
+                <td>
+                    {% if leave.status == 'PENDING' %}
+                    <div style="display: flex; gap: 0.5rem;">
+                        <a href="{% url 'leave_approve' leave.pk 'APPROVED' %}" class="btn btn-outline" style="padding: 0.25rem 0.5rem; font-size: 0.75rem; color: var(--success); border-color: #dcfce7;">Approve</a>
+                        <a href="{% url 'leave_approve' leave.pk 'REJECTED' %}" class="btn btn-outline" style="padding: 0.25rem 0.5rem; font-size: 0.75rem; color: var(--danger); border-color: #fee2e2;">Reject</a>
+                    </div>
+                    {% else %}
+                    <span style="font-size: 0.75rem; color: var(--text-muted);">Processed</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" style="text-align: center; padding: 2rem; color: var(--text-muted);">No leave requests found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

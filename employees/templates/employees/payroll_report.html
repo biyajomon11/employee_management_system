@@ -1,0 +1,52 @@
+{% extends 'employees/base.html' %}
+
+{% block title %}Payroll Report{% endblock %}
+{% block page_title %}Payroll Trends{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h3 style="margin-bottom: 2rem;">Monthly Expenditure</h3>
+    <canvas id="payrollTrendChart" height="100"></canvas>
+</div>
+
+<div class="table-container" style="margin-top: 2rem;">
+    <table>
+        <thead>
+            <tr>
+                <th>Month</th>
+                <th>Total Net Pay</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in payroll_history %}
+            <tr>
+                <td>{{ item.month }}</td>
+                <td><div style="font-weight: 700;">${{ item.total_pay|floatformat:2 }}</div></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('payrollTrendChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: [{% for item in payroll_history %}'{{ item.month }}',{% endfor %}],
+            datasets: [{
+                label: 'Total Net Pay',
+                data: [{% for item in payroll_history %}{{ item.total_pay }},{% endfor %}],
+                borderColor: '#2563eb',
+                tension: 0.3,
+                fill: true,
+                backgroundColor: 'rgba(37, 99, 235, 0.1)'
+            }]
+        }
+    });
+</script>
+{% endblock %}

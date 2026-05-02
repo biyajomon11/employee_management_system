@@ -1,0 +1,49 @@
+{% extends "employees/base.html" %}
+
+{% block title %}Dashboard - EMS{% endblock %}
+
+{% block content %}
+<div class="row align-items-center mt-4 mb-4">
+    <div class="col-md-8">
+        <h2 class="display-6">Welcome Back, {{ user.username }}!</h2>
+        <p class="lead text-muted">Here is an overview of your Employee Management System.</p>
+    </div>
+    <div class="col-md-4 text-end">
+        <span class="badge bg-primary fs-5 p-2">Role: {{ user.username|title }}</span>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-md-4">
+        <div class="card bg-light border-0 shadow-sm h-100">
+            <div class="card-body text-center p-4">
+                <h1 class="display-4 text-primary">{{ total_employees }}</h1>
+                <h5 class="text-muted mt-3">Total Employees</h5>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-8">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body p-4">
+                <h4 class="card-title mb-4">Quick Actions</h4>
+                <div class="d-grid gap-3">
+                    <a href="{% url 'employee_list' %}" class="btn btn-outline-primary btn-lg text-start">
+                        &#128065; View All Employees
+                    </a>
+                    
+                    {% if user.username == 'admin' or user.username == 'manager' %}
+                    <a href="{% url 'employee_create' %}" class="btn btn-primary btn-lg text-start">
+                        &#10133; Add New Employee
+                    </a>
+                    {% else %}
+                    <button class="btn btn-secondary btn-lg text-start" disabled title="You do not have permission">
+                        &#10133; Add New Employee (Read-Only)
+                    </button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

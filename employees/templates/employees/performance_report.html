@@ -1,0 +1,75 @@
+{% extends 'employees/base.html' %}
+
+{% block title %}Performance Report{% endblock %}
+{% block page_title %}Employee Performance Analytics{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h3 style="margin-bottom: 2rem;">Average Employee Ratings</h3>
+    <canvas id="performanceChart" height="100"></canvas>
+</div>
+
+<div class="table-container" style="margin-top: 2rem;">
+    <table>
+        <thead>
+            <tr>
+                <th>Employee</th>
+                <th>Average Rating</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in performance_data %}
+            <tr>
+                <td>{{ item.user__username }}</td>
+                <td>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <span style="font-weight: 700;">{{ item.avg_rating|floatformat:1 }}</span>
+                        <div style="display: flex; color: #f59e0b;">
+                            {% if item.avg_rating >= 1 %}⭐{% endif %}
+                            {% if item.avg_rating >= 2 %}⭐{% endif %}
+                            {% if item.avg_rating >= 3 %}⭐{% endif %}
+                            {% if item.avg_rating >= 4 %}⭐{% endif %}
+                            {% if item.avg_rating >= 5 %}⭐{% endif %}
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    {% if item.avg_rating >= 4 %}
+                    <span class="badge badge-success">Top Performer</span>
+                    {% elif item.avg_rating >= 3 %}
+                    <span class="badge badge-warning">Average</span>
+                    {% else %}
+                    <span class="badge badge-danger">Below Expectations</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('performanceChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: [{% for item in performance_data %}'{{ item.user__username }}',{% endfor %}],
+            datasets: [{
+                label: 'Avg Rating',
+                data: [{% for item in performance_data %}{{ item.avg_rating }},{% endfor %}],
+                backgroundColor: '#10b981'
+            }]
+        },
+        options: {
+            scales: {
+                y: { beginAtZero: true, max: 5 }
+            }
+        }
+    });
+</script>
+{% endblock %}

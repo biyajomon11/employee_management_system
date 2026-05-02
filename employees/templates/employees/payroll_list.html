@@ -1,0 +1,47 @@
+{% extends 'employees/base.html' %}
+
+{% block title %}Payroll History{% endblock %}
+{% block page_title %}Payroll Management{% endblock %}
+
+{% block content %}
+<div class="table-container">
+    <div style="padding: 1.5rem; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center;">
+        <h3 style="font-size: 1.125rem; font-weight: 600;">Salary History</h3>
+        <a href="{% url 'payroll_create' %}" class="btn btn-primary">Generate New Payroll</a>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Employee</th>
+                <th>Month</th>
+                <th>Base Salary</th>
+                <th>Bonuses</th>
+                <th>Deductions</th>
+                <th>Net Pay</th>
+                <th>Payment Date</th>
+                <th>Payslip</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for payroll in payrolls %}
+            <tr>
+                <td><div style="font-weight: 600;">{{ payroll.user.get_full_name|default:payroll.user.username }}</div></td>
+                <td>{{ payroll.month }}</td>
+                <td>${{ payroll.base_salary|floatformat:2 }}</td>
+                <td style="color: var(--success);">+ ${{ payroll.bonuses|floatformat:2 }}</td>
+                <td style="color: var(--danger);">- ${{ payroll.deductions|floatformat:2 }}</td>
+                <td><div style="font-weight: 700;">${{ payroll.net_pay|floatformat:2 }}</div></td>
+                <td>{{ payroll.payment_date }}</td>
+                <td>
+                    <a href="{% url 'payroll_payslip' payroll.pk %}" class="btn btn-outline" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">View Slip</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="8" style="text-align: center; padding: 2rem; color: var(--text-muted);">No payroll records found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

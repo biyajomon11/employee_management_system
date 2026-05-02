@@ -1,0 +1,55 @@
+{% extends 'employees/base.html' %}
+
+{% block title %}My Tasks{% endblock %}
+{% block page_title %}My Assigned Tasks{% endblock %}
+
+{% block content %}
+<div class="table-container">
+    <div style="padding: 1.5rem; border-bottom: 1px solid #e2e8f0;">
+        <h3 style="font-size: 1.125rem; font-weight: 600;">Active Tasks</h3>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Task Title</th>
+                <th>Assigned By</th>
+                <th>Due Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for task in tasks %}
+            <tr>
+                <td>
+                    <div style="font-weight: 600;">{{ task.title }}</div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted);">{{ task.description|truncatechars:50 }}</div>
+                </td>
+                <td>{{ task.assigned_by.get_full_name|default:task.assigned_by.username }}</td>
+                <td>{{ task.due_date }}</td>
+                <td>
+                    <span class="badge {% if task.status == 'COMPLETED' %}badge-success{% elif task.status == 'IN_PROGRESS' %}badge-warning{% else %}badge-danger{% endif %}">
+                        {{ task.get_status_display }}
+                    </span>
+                </td>
+                <td>
+                    <div style="display: flex; gap: 0.5rem;">
+                        {% if task.status == 'PENDING' %}
+                        <a href="{% url 'task_status_update' task.pk 'IN_PROGRESS' %}" class="btn btn-outline" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">Start</a>
+                        {% elif task.status == 'IN_PROGRESS' %}
+                        <a href="{% url 'task_status_update' task.pk 'COMPLETED' %}" class="btn btn-outline" style="padding: 0.25rem 0.5rem; font-size: 0.75rem; color: var(--success); border-color: #dcfce7;">Finish</a>
+                        {% else %}
+                        <span style="font-size: 0.75rem; color: var(--text-muted);">No actions</span>
+                        {% endif %}
+                    </div>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" style="text-align: center; padding: 2rem; color: var(--text-muted);">No tasks assigned to you.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

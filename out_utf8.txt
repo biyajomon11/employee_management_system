@@ -1,0 +1,241 @@
+﻿python : Traceback (most 
+recent call last):
+At line:1 char:49
++ ... ee_project ; python 
+manage.py makemigrations 
+employees > out.txt 2>&1
++                  ~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo        
+      : NotSpecified: (T  
+  raceback (most recent   
+  call last)::String)     
+[], RemoteException
+    + FullyQualifiedError 
+   Id : NativeCommandErr  
+  or
+ 
+  File "C:\Users\User\OneD
+rive\Desktop\Employee_proj
+ect\employee_project\manag
+e.py", line 22, in 
+<module>
+    main()
+    ~~~~^^
+  File "C:\Users\User\OneD
+rive\Desktop\Employee_proj
+ect\employee_project\manag
+e.py", line 18, in main
+    execute_from_command_l
+ine(sys.argv)
+    ~~~~~~~~~~~~~~~~~~~~~~
+~~~^^^^^^^^^^
+  File "C:\Users\User\OneD
+rive\Desktop\Employee_proj
+ect\venv\Lib\site-packages
+\django\core\management\__
+init__.py", line 443, in 
+execute_from_command_line
+    utility.execute()
+    ~~~~~~~~~~~~~~~^^
+  File "C:\Users\User\OneD
+rive\Desktop\Employee_proj
+ect\venv\Lib\site-packages
+\django\core\management\__
+init__.py", line 437, in 
+execute
+    self.fetch_command(sub
+command).run_from_argv(sel
+f.argv)
+    ~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~^^^^
+^^^^^^^
+  File "C:\Users\User\OneD
+rive\Desktop\Employee_proj
+ect\venv\Lib\site-packages
+\django\core\management\ba
+se.py", line 420, in 
+run_from_argv
+    self.execute(*args, 
+**cmd_options)
+    ~~~~~~~~~~~~^^^^^^^^^^
+^^^^^^^^^^^^
+  File "C:\Users\User\OneD
+rive\Desktop\Employee_proj
+ect\venv\Lib\site-packages
+\django\core\management\ba
+se.py", line 464, in 
+execute
+    output = 
+self.handle(*args, 
+**options)
+  File "C:\Users\User\OneD
+rive\Desktop\Employee_proj
+ect\venv\Lib\site-packages
+\django\core\management\ba
+se.py", line 111, in 
+wrapper
+    res = 
+handle_func(*args, 
+**kwargs)
+  File "C:\Users\User\OneD
+rive\Desktop\Employee_proj
+ect\venv\Lib\site-packages
+\django\core\management\co
+mmands\makemigrations.py",
+ line 160, in handle
+    loader.check_consisten
+t_history(connection)
+    ~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~^^^^^^^^^^^^
+  File "C:\Users\User\OneD
+rive\Desktop\Employee_proj
+ect\venv\Lib\site-packages
+\django\db\migrations\load
+er.py", line 350, in 
+check_consistent_history
+    applied = recorder.app
+lied_migrations()
+  File "C:\Users\User\OneD
+rive\Desktop\Employee_proj
+ect\venv\Lib\site-packages
+\django\db\migrations\reco
+rder.py", line 89, in 
+applied_migrations
+    if self.has_table():
+       ~~~~~~~~~~~~~~^^
+  File "C:\Users\User\OneD
+rive\Desktop\Employee_proj
+ect\venv\Lib\site-packages
+\django\db\migrations\reco
+rder.py", line 63, in 
+has_table
+    with 
+self.connection.cursor() 
+as cursor:
+         
+~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\User\OneD
+rive\Desktop\Employee_proj
+ect\venv\Lib\site-packages
+\django\utils\asyncio.py",
+ line 26, in inner
+    return func(*args, 
+**kwargs)
+  File "C:\Users\User\OneD
+rive\Desktop\Employee_proj
+ect\venv\Lib\site-packages
+\django\db\backends\base\b
+ase.py", line 320, in 
+cursor
+    return self._cursor()
+           ~~~~~~~~~~~~^^
+  File "C:\Users\User\OneD
+rive\Desktop\Employee_proj
+ect\venv\Lib\site-packages
+\django\db\backends\base\b
+ase.py", line 296, in 
+_cursor
+    
+self.ensure_connection()
+    
+~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\User\OneD
+rive\Desktop\Employee_proj
+ect\venv\Lib\site-packages
+\django\utils\asyncio.py",
+ line 26, in inner
+    return func(*args, 
+**kwargs)
+  File "C:\Users\User\OneD
+rive\Desktop\Employee_proj
+ect\venv\Lib\site-packages
+\django\db\backends\base\b
+ase.py", line 279, in 
+ensure_connection
+    self.connect()
+    ~~~~~~~~~~~~^^
+  File "C:\Users\User\OneD
+rive\Desktop\Employee_proj
+ect\venv\Lib\site-packages
+\django\utils\asyncio.py",
+ line 26, in inner
+    return func(*args, 
+**kwargs)
+  File "C:\Users\User\OneD
+rive\Desktop\Employee_proj
+ect\venv\Lib\site-packages
+\django\db\backends\base\b
+ase.py", line 256, in 
+connect
+    self.connection = self
+.get_new_connection(conn_p
+arams)
+                      ~~~~
+~~~~~~~~~~~~~~~~~~~^^^^^^^
+^^^^^^
+  File "C:\Users\User\OneD
+rive\Desktop\Employee_proj
+ect\venv\Lib\site-packages
+\django\utils\asyncio.py",
+ line 26, in inner
+    return func(*args, 
+**kwargs)
+  File "C:\Users\User\OneD
+rive\Desktop\Employee_proj
+ect\venv\Lib\site-packages
+\django\db\backends\mysql\
+base.py", line 258, in 
+get_new_connection
+    connection = Database.
+connect(**conn_params)
+  File "C:\Users\User\OneD
+rive\Desktop\Employee_proj
+ect\venv\Lib\site-packages
+\pymysql\connections.py", 
+line 365, in __init__
+    self.connect()
+    ~~~~~~~~~~~~^^
+  File "C:\Users\User\OneD
+rive\Desktop\Employee_proj
+ect\venv\Lib\site-packages
+\pymysql\connections.py", 
+line 681, in connect
+    self._request_authenti
+cation()
+    ~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~^^
+  File "C:\Users\User\OneD
+rive\Desktop\Employee_proj
+ect\venv\Lib\site-packages
+\pymysql\connections.py", 
+line 980, in 
+_request_authentication
+    auth_packet = _auth.ca
+ching_sha2_password_auth(s
+elf, auth_packet)
+  File "C:\Users\User\OneD
+rive\Desktop\Employee_proj
+ect\venv\Lib\site-packages
+\pymysql\_auth.py", line 
+271, in 
+caching_sha2_password_auth
+    data = sha2_rsa_encryp
+t(conn.password, 
+conn.salt, 
+conn.server_public_key)
+  File "C:\Users\User\OneD
+rive\Desktop\Employee_proj
+ect\venv\Lib\site-packages
+\pymysql\_auth.py", line 
+144, in sha2_rsa_encrypt
+    raise RuntimeError(
+    ...<2 lines>...
+    )
+RuntimeError: 
+'cryptography' package is 
+required for 
+sha256_password or 
+caching_sha2_password 
+auth methods

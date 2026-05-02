@@ -1,0 +1,86 @@
+{% extends 'employees/base.html' %}
+
+{% block title %}Admin Dashboard{% endblock %}
+{% block page_title %}Administrator Dashboard{% endblock %}
+
+{% block content %}
+<div class="stats-grid">
+    <div class="card">
+        <div class="card-title">Total Employees</div>
+        <div class="card-value">{{ total_users }}</div>
+        <div style="font-size: 0.75rem; color: var(--success); margin-top: 0.5rem;">↑ 2 since last month</div>
+    </div>
+    <div class="card">
+        <div class="card-title">Departments</div>
+        <div class="card-value">{{ total_departments }}</div>
+        <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.5rem;">Active organization units</div>
+    </div>
+    <div class="card">
+        <div class="card-title">Present Today</div>
+        <div class="card-value">{{ present_today }}</div>
+        <div style="font-size: 0.75rem; color: var(--primary); margin-top: 0.5rem;">Attendance tracked</div>
+    </div>
+    <div class="card">
+        <div class="card-title">Monthly Payroll</div>
+        <div class="card-value">${{ total_payroll|floatformat:2 }}</div>
+        <div style="font-size: 0.75rem; color: var(--warning); margin-top: 0.5rem;">Pending approvals</div>
+    </div>
+</div>
+
+<div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; margin-top: 2rem;">
+    <div class="card">
+        <h3 style="margin-bottom: 1.5rem; font-size: 1.125rem;">Payroll Summary</h3>
+        <canvas id="payrollChart" height="200"></canvas>
+    </div>
+    
+    <div class="card">
+        <h3 style="margin-bottom: 1.5rem; font-size: 1.125rem;">Quick Actions</h3>
+        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+            <a href="{% url 'user_create' %}" class="btn btn-outline" style="justify-content: flex-start; gap: 0.75rem;">
+                <i>👤</i> Add New Employee
+            </a>
+            <a href="{% url 'department_create' %}" class="btn btn-outline" style="justify-content: flex-start; gap: 0.75rem;">
+                <i>🏢</i> Create Department
+            </a>
+            <a href="{% url 'payroll_create' %}" class="btn btn-outline" style="justify-content: flex-start; gap: 0.75rem;">
+                <i>💰</i> Generate Payroll
+            </a>
+            <a href="{% url 'reports_overview' %}" class="btn btn-outline" style="justify-content: flex-start; gap: 0.75rem;">
+                <i>📊</i> View Reports
+            </a>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('payrollChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+            datasets: [{
+                label: 'Payroll Expenditure ($)',
+                data: [12000, 19000, 15000, 17000, 22000, {{ total_payroll }}],
+                backgroundColor: 'rgba(37, 99, 235, 0.2)',
+                borderColor: 'rgba(37, 99, 235, 1)',
+                borderWidth: 2,
+                borderRadius: 5
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                y: { beginAtZero: true, grid: { display: false } },
+                x: { grid: { display: false } }
+            }
+        }
+    });
+</script>
+{% endblock %}
