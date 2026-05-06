@@ -105,7 +105,7 @@
                         <td>{{ task.due_date|date:"d M, Y" }}</td>
                         <td>
                             <span class="badge {% if task.status == 'COMPLETED' %}badge-success{% elif task.status == 'IN_PROGRESS' %}badge-warning{% else %}badge-secondary{% endif %}">
-                                {{ task.status|replace:"_, "|title }}
+                                {{ task.get_status_display }}
                             </span>
                         </td>
                     </tr>
