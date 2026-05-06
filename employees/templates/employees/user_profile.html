@@ -1,0 +1,122 @@
+{% extends 'employees/base.html' %}
+
+{% block title %}Employee Profile - {{ employee.get_full_name|default:employee.username }}{% endblock %}
+
+{% block page_title %}Employee Profile{% endblock %}
+
+{% block content %}
+<div class="profile-container" style="display: grid; grid-template-columns: 1fr 2fr; gap: 2rem;">
+    <!-- Profile Card -->
+    <div class="card" style="height: fit-content;">
+        <div style="text-align: center; padding: 1rem;">
+            <div style="width: 100px; height: 100px; background: var(--primary-light); color: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; font-weight: 700; margin: 0 auto 1rem;">
+                {{ employee.username|slice:":1"|upper }}
+            </div>
+            <h2 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 0.25rem;">{{ employee.get_full_name|default:employee.username }}</h2>
+            <p style="color: var(--text-muted); margin-bottom: 1rem;">{{ employee.profile.job_title|default:"Staff Member" }}</p>
+            <span class="badge {% if employee.profile.role == 'ADMIN' %}badge-danger{% elif employee.profile.role == 'MANAGER' %}badge-warning{% else %}badge-success{% endif %}" style="padding: 0.5rem 1rem;">
+                {{ employee.profile.get_role_display }}
+            </span>
+        </div>
+        
+        <div style="margin-top: 2rem; border-top: 1px solid #e2e8f0; padding-top: 1.5rem;">
+            <div style="margin-bottom: 1rem;">
+                <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600;">Department</div>
+                <div style="font-weight: 500;">{{ employee.profile.department.name|default:"N/A" }}</div>
+            </div>
+            <div style="margin-bottom: 1rem;">
+                <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600;">Email</div>
+                <div style="font-weight: 500;">{{ employee.email }}</div>
+            </div>
+            <div style="margin-bottom: 1rem;">
+                <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600;">Phone</div>
+                <div style="font-weight: 500;">{{ employee.profile.phone|default:"N/A" }}</div>
+            </div>
+            <div style="margin-bottom: 1rem;">
+                <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600;">Joined On</div>
+                <div style="font-weight: 500;">{{ employee.profile.date_of_joining|date:"d M, Y" }}</div>
+            </div>
+        </div>
+        
+        {% if user.profile.role == 'ADMIN' %}
+        <div style="margin-top: 1rem;">
+            <a href="{% url 'user_edit' employee.id %}" class="btn btn-primary" style="width: 100%; display: block; text-align: center;">Edit Profile</a>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Activity Sections -->
+    <div style="display: flex; flex-direction: column; gap: 2rem;">
+        <!-- Recent Attendance -->
+        <div class="table-container">
+            <div style="padding: 1.5rem; border-bottom: 1px solid #e2e8f0;">
+                <h3 style="font-size: 1.125rem; font-weight: 600;">Recent Attendance</h3>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Check In</th>
+                        <th>Check Out</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for att in attendance %}
+                    <tr>
+                        <td>{{ att.date|date:"d M, Y" }}</td>
+                        <td>
+                            <span class="badge {% if att.status == 'PRESENT' %}badge-success{% elif att.status == 'ABSENT' %}badge-danger{% else %}badge-warning{% endif %}">
+                                {{ att.status }}
+                            </span>
+                        </td>
+                        <td>{{ att.check_in|time:"H:i"|default:"-" }}</td>
+                        <td>{{ att.check_out|time:"H:i"|default:"-" }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" style="text-align: center; padding: 2rem; color: var(--text-muted);">No attendance records found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Recent Tasks -->
+        <div class="table-container">
+            <div style="padding: 1.5rem; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center;">
+                <h3 style="font-size: 1.125rem; font-weight: 600;">Assigned Tasks</h3>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Task</th>
+                        <th>Due Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for task in tasks %}
+                    <tr>
+                        <td>
+                            <div style="font-weight: 500;">{{ task.title }}</div>
+                            <div style="font-size: 0.75rem; color: var(--text-muted);">{{ task.description|truncatechars:50 }}</div>
+                        </td>
+                        <td>{{ task.due_date|date:"d M, Y" }}</td>
+                        <td>
+                            <span class="badge {% if task.status == 'COMPLETED' %}badge-success{% elif task.status == 'IN_PROGRESS' %}badge-warning{% else %}badge-secondary{% endif %}">
+                                {{ task.status|replace:"_, "|title }}
+                            </span>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="3" style="text-align: center; padding: 2rem; color: var(--text-muted);">No tasks assigned.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

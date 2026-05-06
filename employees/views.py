@@ -227,8 +227,8 @@ def reports_overview(request):
 @role_required(['ADMIN'])
 def attendance_report(request):
     today = timezone.localdate()
-    # Get all employees
-    employees = User.objects.filter(profile__role='EMPLOYEE').select_related('profile', 'profile__department')
+    # Get all staff (Employees and Managers)
+    employees = User.objects.filter(profile__role__in=['EMPLOYEE', 'MANAGER']).select_related('profile', 'profile__department')
     
     # Get today's attendance records
     attendance_today = Attendance.objects.filter(date=today).select_related('user')
@@ -276,7 +276,11 @@ def manager_dashboard(request):
     
     # Today's attendance for team
     today = timezone.localdate()
-    team_attendance = Attendance.objects.filter(date=today, user__profile__department=dept).select_related('user')
+    if dept:
+        team_attendance = Attendance.objects.filter(date=today, user__profile__department=dept).select_related('user')
+    else:
+        team_attendance = Attendance.objects.none()
+        
     attendance_map = {a.user_id: a for a in team_attendance}
     
     present_count = team_attendance.filter(status='PRESENT').count()
@@ -299,6 +303,27 @@ def manager_dashboard(request):
         'total_team': team_members.count(),
     }
     return render(request, 'employees/manager_dashboard.html', context)
+
+@login_required
+@role_required(['MANAGER', 'ADMIN'])
+def user_profile(request, pk):
+    user = get_object_or_404(User, pk=pk)
+    # If manager, check if employee is in the same department
+    if request.user.profile.role == 'MANAGER' and user.profile.department != request.user.profile.department:
+        messages.error(request, "You can only view profiles of employees in your department.")
+        return redirect('manager_dashboard')
+    
+    tasks = Task.objects.filter(assigned_to=user).order_by('-created_at')[:5]
+    attendance = Attendance.objects.filter(user=user).order_by('-date')[:5]
+    leaves = Leave.objects.filter(user=user).order_by('-start_date')[:5]
+    
+    context = {
+        'employee': user,
+        'tasks': tasks,
+        'attendance': attendance,
+        'leaves': leaves,
+    }
+    return render(request, 'employees/user_profile.html', context)
 
 @login_required
 @role_required(['MANAGER', 'ADMIN'])
@@ -334,22 +359,29 @@ def manager_tasks(request):
 @login_required
 @role_required(['MANAGER', 'ADMIN'])
 def task_create(request):
+    user_role = request.user.profile.role
     dept = request.user.profile.department
+    
     if request.method == 'POST':
         form = TaskForm(request.POST)
-        if dept:
-            form.fields['assigned_to'].queryset = User.objects.filter(profile__department=dept).exclude(id=request.user.id)
-        
-        if form.is_valid():
-            task = form.save(commit=False)
-            task.assigned_by = request.user
-            task.save()
-            messages.success(request, "Task assigned successfully.")
-            return redirect('manager_dashboard')
     else:
         form = TaskForm()
-        if dept:
-            form.fields['assigned_to'].queryset = User.objects.filter(profile__department=dept).exclude(id=request.user.id)
+
+    # Filter the assigned_to queryset based on role
+    if user_role == 'ADMIN':
+        # Admin can assign to any employee
+        form.fields['assigned_to'].queryset = User.objects.all().exclude(id=request.user.id)
+    elif dept:
+        # Manager can assign to their department
+        form.fields['assigned_to'].queryset = User.objects.filter(profile__department=dept).exclude(id=request.user.id)
+    
+    if request.method == 'POST' and form.is_valid():
+        task = form.save(commit=False)
+        task.assigned_by = request.user
+        task.save()
+        messages.success(request, "Task assigned successfully.")
+        return redirect('dashboard')
+        
     return render(request, 'employees/task_form.html', {'form': form})
 
 @login_required

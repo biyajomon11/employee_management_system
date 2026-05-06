@@ -31,6 +31,7 @@
                 <td>{{ user.profile.date_of_joining }}</td>
                 <td>
                     <div style="display: flex; gap: 0.5rem;">
+                        <a href="{% url 'user_profile' user.pk %}" class="btn btn-outline" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">Profile</a>
                         <a href="{% url 'user_edit' user.pk %}" class="btn btn-outline" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">Edit</a>
                         <a href="{% url 'user_delete' user.pk %}" class="btn btn-outline" style="padding: 0.25rem 0.5rem; font-size: 0.75rem; color: var(--danger); border-color: #fee2e2;" onclick="return confirm('Are you sure you want to delete this user?')">Delete</a>
                     </div>

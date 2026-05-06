@@ -40,6 +40,7 @@ urlpatterns = [
     path('manager/leaves/', views.manager_leaves, name='manager_leaves'),
     path('manager/leaves/<int:pk>/<str:status>/', views.leave_approve, name='leave_approve'),
     path('manager/attendance/mark/<int:user_id>/', views.manager_mark_attendance, name='manager_mark_attendance'),
+    path('profile/<int:pk>/', views.user_profile, name='user_profile'),
     
     # Features
     path('attendance/check/', views.attendance_check, name='attendance_check'),

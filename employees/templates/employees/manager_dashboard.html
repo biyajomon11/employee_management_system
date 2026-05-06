@@ -71,7 +71,7 @@
                             <button type="submit" class="btn btn-outline" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">Check Out</button>
                         </form>
                         {% endif %}
-                        <a href="#" class="btn btn-outline" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">Profile</a>
+                        <a href="{% url 'user_profile' item.profile.user.id %}" class="btn btn-outline" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">Profile</a>
                     </div>
                 </td>
             </tr>
