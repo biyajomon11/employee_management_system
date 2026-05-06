@@ -294,6 +294,9 @@ def manager_dashboard(request):
             'attendance': att,
         })
     
+    # Top Performers (Best average rating in the department)
+    top_performers = User.objects.filter(profile__department=dept).annotate(avg_rating=Avg('performance_reviews__rating')).filter(avg_rating__isnull=False).order_by('-avg_rating')[:3]
+    
     context = {
         'team_list': team_list,
         'tasks': tasks,
@@ -301,6 +304,7 @@ def manager_dashboard(request):
         'pending_leaves': pending_leaves,
         'present_count': present_count,
         'total_team': team_members.count(),
+        'top_performers': top_performers,
     }
     return render(request, 'employees/manager_dashboard.html', context)
 
@@ -322,8 +326,27 @@ def user_profile(request, pk):
         'tasks': tasks,
         'attendance': attendance,
         'leaves': leaves,
+        'reviews': PerformanceReview.objects.filter(user=user).order_by('-review_date'),
     }
     return render(request, 'employees/user_profile.html', context)
+
+@login_required
+@role_required(['MANAGER', 'ADMIN'])
+def performance_review_create(request, user_id):
+    employee = get_object_or_404(User, id=user_id)
+    if request.method == 'POST':
+        form = PerformanceReviewForm(request.POST)
+        if form.is_valid():
+            review = form.save(commit=False)
+            review.user = employee
+            review.reviewer = request.user
+            review.save()
+            messages.success(request, f"Performance review for {employee.username} submitted.")
+            return redirect('user_profile', pk=user_id)
+    else:
+        form = PerformanceReviewForm(initial={'user': employee})
+    
+    return render(request, 'employees/performance_review_form.html', {'form': form, 'employee': employee})
 
 @login_required
 @role_required(['MANAGER', 'ADMIN'])

@@ -1,0 +1,62 @@
+{% extends 'employees/base.html' %}
+
+{% block title %}Submit Performance Review{% endblock %}
+
+{% block page_title %}Performance Review for {{ employee.get_full_name|default:employee.username }}{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 600px; margin: 2rem auto;">
+    <form method="POST">
+        {% csrf_token %}
+        
+        <div style="margin-bottom: 1.5rem;">
+            <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Employee</label>
+            <input type="text" value="{{ employee.get_full_name|default:employee.username }}" class="form-control" disabled>
+            <input type="hidden" name="user" value="{{ employee.id }}">
+        </div>
+
+        <div style="margin-bottom: 1.5rem;">
+            <label for="{{ form.rating.id_for_label }}" style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Rating (1-5)</label>
+            {{ form.rating }}
+            {% if form.rating.errors %}
+                <div style="color: var(--danger); font-size: 0.875rem; margin-top: 0.25rem;">{{ form.rating.errors }}</div>
+            {% endif %}
+            <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem;">1 = Poor, 5 = Excellent</p>
+        </div>
+
+        <div style="margin-bottom: 2rem;">
+            <label for="{{ form.comments.id_for_label }}" style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Review Comments</label>
+            {{ form.comments }}
+            {% if form.comments.errors %}
+                <div style="color: var(--danger); font-size: 0.875rem; margin-top: 0.25rem;">{{ form.comments.errors }}</div>
+            {% endif %}
+        </div>
+
+        <div style="display: flex; gap: 1rem;">
+            <button type="submit" class="btn btn-primary" style="flex: 1;">Submit Review</button>
+            <a href="{% url 'user_profile' employee.id %}" class="btn btn-outline" style="flex: 1; text-align: center;">Cancel</a>
+        </div>
+    </form>
+</div>
+
+<style>
+    select, textarea {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #e2e8f0;
+        border-radius: 0.5rem;
+        background-color: #fff;
+        font-family: inherit;
+        font-size: 1rem;
+    }
+    textarea {
+        min-height: 150px;
+        resize: vertical;
+    }
+    select:focus, textarea:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+</style>
+{% endblock %}

@@ -20,10 +20,31 @@
         <div class="card-title">Active Tasks</div>
         <div class="card-value">{{ tasks.count }}</div>
     </div>
-    <div class="card">
-        <div class="card-title">Pending Approvals</div>
-        <div class="card-value">{{ pending_leaves }}</div>
+</div>
+
+<h3 style="margin: 2rem 0 1rem; font-size: 1.25rem; font-weight: 600;">🏆 Top Performers</h3>
+<div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));">
+    {% for top in top_performers %}
+    <div class="card" style="border-top: 4px solid #f59e0b;">
+        <div style="display: flex; align-items: center; gap: 1rem;">
+            <div style="width: 48px; height: 48px; background: #fffbeb; color: #f59e0b; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.25rem;">
+                {{ forloop.counter }}
+            </div>
+            <div>
+                <div style="font-weight: 600;">{{ top.get_full_name|default:top.username }}</div>
+                <div style="font-size: 0.875rem; color: var(--text-muted);">{{ top.profile.job_title }}</div>
+                <div style="color: #f59e0b; font-size: 0.875rem; margin-top: 0.25rem;">
+                    ★ {{ top.avg_rating|floatformat:1 }} / 5.0
+                </div>
+            </div>
+        </div>
+        <a href="{% url 'user_profile' top.id %}" style="display: block; margin-top: 1rem; font-size: 0.75rem; color: var(--primary); font-weight: 600; text-decoration: none;">View Details →</a>
     </div>
+    {% empty %}
+    <div class="card" style="grid-column: 1 / -1; text-align: center; color: var(--text-muted);">
+        No performance reviews submitted yet for this department.
+    </div>
+    {% endfor %}
 </div>
 
 <div class="table-container" style="margin-top: 2rem;">
